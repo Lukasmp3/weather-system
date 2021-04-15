@@ -1,4 +1,4 @@
-package eu.profinit.manta.weathersystem;
+package eu.profinit.manta.weathersystem.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

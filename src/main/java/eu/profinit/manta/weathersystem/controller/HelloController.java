@@ -1,4 +1,4 @@
-package eu.profinit.manta.weathersystem;
+package eu.profinit.manta.weathersystem.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
