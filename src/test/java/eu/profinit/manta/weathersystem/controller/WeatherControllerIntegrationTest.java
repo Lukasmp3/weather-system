@@ -1,7 +1,6 @@
 package eu.profinit.manta.weathersystem.controller;
 
 import eu.profinit.manta.weathersystem.model.response.WeatherResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,11 +26,6 @@ public class WeatherControllerIntegrationTest {
     @Autowired
     private TestRestTemplate template;
 
-//    @BeforeEach
-//    public void setUp() throws Exception {
-//        this.base = new URL("http://localhost:" + port + "/weather/v1/history?city=Prague&dateTime=2007-12-03T10:15");
-//    }
-
     @Test
     public void getHistoryValid() throws MalformedURLException {
         this.base = new URL("http://localhost:" + port + "/weather/v1/history?city=Prague&dateTime=2007-12-03T10:15");
@@ -50,6 +44,15 @@ public class WeatherControllerIntegrationTest {
     }
 
     @Test
+    public void getHistoryCityNotFound() throws MalformedURLException {
+        this.base = new URL("http://localhost:" + port + "/weather/v1/history?city=&dateTime=2007-12-03T10:15");
+
+        ResponseEntity<WeatherResponse> response = template.getForEntity(base.toString(), WeatherResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     public void getForecastValid() throws MalformedURLException {
         this.base = new URL("http://localhost:" + port + "/weather/v1/forecast?city=Prague&dateTime=2030-12-03T10:15");
 
@@ -64,5 +67,14 @@ public class WeatherControllerIntegrationTest {
         assertThat(weatherResponse.getCloudCoverage()).isNotNull();
         assertThat(weatherResponse.getWindSpeed()).isNotNegative();
         assertThat(weatherResponse.getWindDirection()).isBetween(0, 360);
+    }
+
+    @Test
+    public void getForecastCityNotFound() throws MalformedURLException {
+        this.base = new URL("http://localhost:" + port + "/weather/v1/forecast?city=&dateTime=2007-12-03T10:15");
+
+        ResponseEntity<WeatherResponse> response = template.getForEntity(base.toString(), WeatherResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

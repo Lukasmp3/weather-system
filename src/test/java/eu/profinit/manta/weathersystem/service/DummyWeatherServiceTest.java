@@ -1,6 +1,7 @@
 package eu.profinit.manta.weathersystem.service;
 
 import eu.profinit.manta.weathersystem.exception.CityNotFoundException;
+import eu.profinit.manta.weathersystem.exception.InvalidDateTimeException;
 import eu.profinit.manta.weathersystem.model.request.WeatherRequest;
 import eu.profinit.manta.weathersystem.model.response.WeatherResponse;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class DummyWeatherServiceTest {
 
     @Test
     public void dummyWeatherServiceHistoryValid() {
-        LocalDateTime dateTime = LocalDateTime.of(1999, 1, 1, 0, 0);
+        LocalDateTime dateTime = LocalDateTime.MIN;
         WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
 
         WeatherResponse weatherResponse = weatherService.getHistory(weatherRequest);
@@ -35,16 +36,26 @@ public class DummyWeatherServiceTest {
     }
 
     @Test
-    public void dummyWeatherServiceHistoryEmptyCity() {
-        LocalDateTime dateTime = LocalDateTime.of(1999, 1, 1, 0, 0);
+    public void dummyWeatherServiceHistoryCityNotFound() {
+        LocalDateTime dateTime = LocalDateTime.MIN;
+
         WeatherRequest weatherRequest = new WeatherRequest("", dateTime);
 
         assertThrows(CityNotFoundException.class, () -> weatherService.getHistory(weatherRequest));
     }
 
     @Test
+    public void dummyWeatherServiceHistoryFutureTime() {
+        LocalDateTime dateTime = LocalDateTime.MAX;
+
+        WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
+
+        assertThrows(InvalidDateTimeException.class, () -> weatherService.getHistory(weatherRequest));
+    }
+
+    @Test
     public void dummyWeatherServiceForecastValid() {
-        LocalDateTime dateTime = LocalDateTime.of(2030, 1, 1, 0, 0);
+        LocalDateTime dateTime = LocalDateTime.MAX;
         WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
 
         WeatherResponse weatherResponse = weatherService.getForecast(weatherRequest);
@@ -59,11 +70,21 @@ public class DummyWeatherServiceTest {
     }
 
     @Test
-    public void dummyWeatherServiceForecastEmptyCity() {
-        LocalDateTime dateTime = LocalDateTime.of(2030, 1, 1, 0, 0);
+    public void dummyWeatherServiceForecastCityNotFound() {
+        LocalDateTime dateTime = LocalDateTime.MAX;
+
         WeatherRequest weatherRequest = new WeatherRequest("", dateTime);
 
         assertThrows(CityNotFoundException.class, () -> weatherService.getForecast(weatherRequest));
+    }
+
+    @Test
+    public void dummyWeatherServiceForecastPastTime() {
+        LocalDateTime dateTime = LocalDateTime.MIN;
+
+        WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
+
+        assertThrows(InvalidDateTimeException.class, () -> weatherService.getForecast(weatherRequest));
     }
 
 }

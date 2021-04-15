@@ -1,9 +1,7 @@
 package eu.profinit.manta.weathersystem.model.response;
 
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 
-// TODO: same as request
 public class WeatherResponse {
 
     private final String city;
