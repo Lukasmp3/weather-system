@@ -19,7 +19,7 @@ public class DummyWeatherServiceTest {
     private WeatherService weatherService;
 
     @Test
-    public void dummyWeatherServiceValid() {
+    public void dummyWeatherServiceHistoryValid() {
         LocalDateTime dateTime = LocalDateTime.of(1999, 1, 1, 0, 0);
         WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
 
@@ -29,17 +29,41 @@ public class DummyWeatherServiceTest {
         assertThat(weatherResponse.getCity()).isEqualTo("Prague");
         assertThat(weatherResponse.getDateTime()).isEqualTo(dateTime);
         assertThat(weatherResponse.getTemperature()).isNotNull();
-        assertThat(weatherResponse.getCloudCoverage()).isNotNull();
+        assertThat(weatherResponse.getCloudCoverage()).isEqualTo(WeatherResponse.CloudCoverage.OVERCAST);
         assertThat(weatherResponse.getWindSpeed()).isNotNegative();
         assertThat(weatherResponse.getWindDirection()).isBetween(0, 360);
     }
 
     @Test
-    public void dummyWeatherServiceEmptyCity() {
+    public void dummyWeatherServiceHistoryEmptyCity() {
         LocalDateTime dateTime = LocalDateTime.of(1999, 1, 1, 0, 0);
         WeatherRequest weatherRequest = new WeatherRequest("", dateTime);
 
         assertThrows(CityNotFoundException.class, () -> weatherService.getHistory(weatherRequest));
+    }
+
+    @Test
+    public void dummyWeatherServiceForecastValid() {
+        LocalDateTime dateTime = LocalDateTime.of(2030, 1, 1, 0, 0);
+        WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
+
+        WeatherResponse weatherResponse = weatherService.getForecast(weatherRequest);
+
+        assertThat(weatherResponse).isNotNull();
+        assertThat(weatherResponse.getCity()).isEqualTo("Prague");
+        assertThat(weatherResponse.getDateTime()).isEqualTo(dateTime);
+        assertThat(weatherResponse.getTemperature()).isNotNull();
+        assertThat(weatherResponse.getCloudCoverage()).isEqualTo(WeatherResponse.CloudCoverage.CLEAR);
+        assertThat(weatherResponse.getWindSpeed()).isNotNegative();
+        assertThat(weatherResponse.getWindDirection()).isBetween(0, 360);
+    }
+
+    @Test
+    public void dummyWeatherServiceForecastEmptyCity() {
+        LocalDateTime dateTime = LocalDateTime.of(2030, 1, 1, 0, 0);
+        WeatherRequest weatherRequest = new WeatherRequest("", dateTime);
+
+        assertThrows(CityNotFoundException.class, () -> weatherService.getForecast(weatherRequest));
     }
 
 }

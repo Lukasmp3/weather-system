@@ -1,5 +1,6 @@
 package eu.profinit.manta.weathersystem.controller;
 
+import eu.profinit.manta.weathersystem.model.response.WeatherResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,16 +27,42 @@ public class WeatherControllerIntegrationTest {
     @Autowired
     private TestRestTemplate template;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/");
+//    @BeforeEach
+//    public void setUp() throws Exception {
+//        this.base = new URL("http://localhost:" + port + "/weather/v1/history?city=Prague&dateTime=2007-12-03T10:15");
+//    }
+
+    @Test
+    public void getHistoryValid() throws MalformedURLException {
+        this.base = new URL("http://localhost:" + port + "/weather/v1/history?city=Prague&dateTime=2007-12-03T10:15");
+
+        ResponseEntity<WeatherResponse> response = template.getForEntity(base.toString(), WeatherResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        WeatherResponse weatherResponse = response.getBody();
+        assertThat(weatherResponse).isNotNull();
+        assertThat(weatherResponse.getCity()).isEqualTo("Prague");
+        assertThat(weatherResponse.getDateTime()).isEqualTo(LocalDateTime.of(2007, 12, 3, 10, 15));
+        assertThat(weatherResponse.getTemperature()).isNotNull();
+        assertThat(weatherResponse.getCloudCoverage()).isNotNull();
+        assertThat(weatherResponse.getWindSpeed()).isNotNegative();
+        assertThat(weatherResponse.getWindDirection()).isBetween(0, 360);
     }
 
     @Test
-    public void getHello() throws Exception {
-        ResponseEntity<String> response = template.getForEntity(base.toString(),
-                String.class);
+    public void getForecastValid() throws MalformedURLException {
+        this.base = new URL("http://localhost:" + port + "/weather/v1/forecast?city=Prague&dateTime=2030-12-03T10:15");
+
+        ResponseEntity<WeatherResponse> response = template.getForEntity(base.toString(), WeatherResponse.class);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("Greetings from Spring Boot!");
+        WeatherResponse weatherResponse = response.getBody();
+        assertThat(weatherResponse).isNotNull();
+        assertThat(weatherResponse.getCity()).isEqualTo("Prague");
+        assertThat(weatherResponse.getDateTime()).isEqualTo(LocalDateTime.of(2030, 12, 3, 10, 15));
+        assertThat(weatherResponse.getTemperature()).isNotNull();
+        assertThat(weatherResponse.getCloudCoverage()).isNotNull();
+        assertThat(weatherResponse.getWindSpeed()).isNotNegative();
+        assertThat(weatherResponse.getWindDirection()).isBetween(0, 360);
     }
 }

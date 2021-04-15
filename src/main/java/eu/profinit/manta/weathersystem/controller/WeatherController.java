@@ -28,9 +28,15 @@ public class WeatherController {
             @RequestParam("city") String city,
             @RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime) {
 
-        WeatherResponse weatherResponse = weatherService.getHistory(new WeatherRequest(city, dateTime));
+        return weatherService.getHistory(new WeatherRequest(city, dateTime));
+    }
 
-        return weatherResponse;
+    @GetMapping("/forecast")
+    public WeatherResponse getForecast(
+            @RequestParam("city") String city,
+            @RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime) {
+
+        return weatherService.getForecast(new WeatherRequest(city, dateTime));
     }
 
 }
