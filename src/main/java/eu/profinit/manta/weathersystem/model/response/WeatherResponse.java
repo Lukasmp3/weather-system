@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.time.LocalDateTime;
 
 // TODO: same as request
-public class CommonWeatherResponse {
+public class WeatherResponse {
 
     private final String city;
 
@@ -27,7 +27,7 @@ public class CommonWeatherResponse {
      */
     private final int windDirection;
 
-    public CommonWeatherResponse(String city, LocalDateTime dateTime, double temperature, CloudCoverage cloudCoverage, double windSpeed, int windDirection) {
+    public WeatherResponse(String city, LocalDateTime dateTime, double temperature, CloudCoverage cloudCoverage, double windSpeed, int windDirection) {
         this.city = city;
         this.dateTime = dateTime;
         this.temperature = temperature;

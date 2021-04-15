@@ -1,7 +1,8 @@
 package eu.profinit.manta.weathersystem.service;
 
-import eu.profinit.manta.weathersystem.model.request.CommonWeatherRequest;
-import eu.profinit.manta.weathersystem.model.response.CommonWeatherResponse;
+import eu.profinit.manta.weathersystem.exception.CityNotFoundException;
+import eu.profinit.manta.weathersystem.model.request.WeatherRequest;
+import eu.profinit.manta.weathersystem.model.response.WeatherResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class DummyWeatherServiceTest {
@@ -17,11 +19,11 @@ public class DummyWeatherServiceTest {
     private WeatherService weatherService;
 
     @Test
-    public void dummyWeatherServiceTest() {
+    public void dummyWeatherServiceValid() {
         LocalDateTime dateTime = LocalDateTime.of(1999, 1, 1, 0, 0);
-        CommonWeatherRequest weatherRequest = new CommonWeatherRequest("Prague", dateTime);
+        WeatherRequest weatherRequest = new WeatherRequest("Prague", dateTime);
 
-        CommonWeatherResponse weatherResponse = weatherService.getHistory(weatherRequest);
+        WeatherResponse weatherResponse = weatherService.getHistory(weatherRequest);
 
         assertThat(weatherResponse).isNotNull();
         assertThat(weatherResponse.getCity()).isEqualTo("Prague");
@@ -30,6 +32,14 @@ public class DummyWeatherServiceTest {
         assertThat(weatherResponse.getCloudCoverage()).isNotNull();
         assertThat(weatherResponse.getWindSpeed()).isNotNegative();
         assertThat(weatherResponse.getWindDirection()).isBetween(0, 360);
+    }
+
+    @Test
+    public void dummyWeatherServiceEmptyCity() {
+        LocalDateTime dateTime = LocalDateTime.of(1999, 1, 1, 0, 0);
+        WeatherRequest weatherRequest = new WeatherRequest("", dateTime);
+
+        assertThrows(CityNotFoundException.class, () -> weatherService.getHistory(weatherRequest));
     }
 
 }

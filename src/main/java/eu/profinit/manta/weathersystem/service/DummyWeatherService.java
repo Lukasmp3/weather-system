@@ -1,7 +1,8 @@
 package eu.profinit.manta.weathersystem.service;
 
-import eu.profinit.manta.weathersystem.model.request.CommonWeatherRequest;
-import eu.profinit.manta.weathersystem.model.response.CommonWeatherResponse;
+import eu.profinit.manta.weathersystem.exception.CityNotFoundException;
+import eu.profinit.manta.weathersystem.model.request.WeatherRequest;
+import eu.profinit.manta.weathersystem.model.response.WeatherResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -15,21 +16,27 @@ public class DummyWeatherService implements WeatherService {
     private final Random random = new Random();
 
     @Override
-    public CommonWeatherResponse getHistory(CommonWeatherRequest weatherRequest) {
-        return new CommonWeatherResponse(
-                weatherRequest.getCity(),
+    public WeatherResponse getHistory(WeatherRequest weatherRequest) {
+
+        String city = weatherRequest.getCity();
+        if (city.isBlank()) {
+            throw new CityNotFoundException(city);
+        }
+
+        return new WeatherResponse(
+                city,
                 weatherRequest.getDateTime(),
                 getRandomIntInInterval(-20, 30),
-                getRandomEnum(CommonWeatherResponse.CloudCoverage.class),
+                getRandomEnum(WeatherResponse.CloudCoverage.class),
                 getRandomIntInInterval(0, 45),
                 getRandomIntInInterval(0, 360)
         );
     }
 
     @Override
-    public CommonWeatherResponse getForecast(CommonWeatherRequest weatherRequest) {
+    public WeatherResponse getForecast(WeatherRequest weatherRequest) {
         return null;
-//        return new CommonWeatherResponse(weatherRequest.getCity(), weatherRequest.getDateTime());
+//        return new WeatherResponse(weatherRequest.getCity(), weatherRequest.getDateTime());
     }
 
     private int getRandomIntInInterval(double min, double max) {

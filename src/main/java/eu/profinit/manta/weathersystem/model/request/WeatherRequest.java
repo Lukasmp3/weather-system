@@ -1,15 +1,14 @@
 package eu.profinit.manta.weathersystem.model.request;
 
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 
-public class CommonWeatherRequest {
+public class WeatherRequest {
 
     private final String city;
 
     private final LocalDateTime dateTime;
 
-    public CommonWeatherRequest(String city, LocalDateTime dateTime) {
+    public WeatherRequest(String city, LocalDateTime dateTime) {
         this.city = city;
         this.dateTime = dateTime;
     }

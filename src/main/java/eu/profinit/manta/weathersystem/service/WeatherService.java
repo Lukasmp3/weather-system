@@ -1,13 +1,15 @@
 package eu.profinit.manta.weathersystem.service;
 
-import eu.profinit.manta.weathersystem.model.request.CommonWeatherRequest;
-import eu.profinit.manta.weathersystem.model.response.CommonWeatherResponse;
-import org.springframework.stereotype.Service;
+import eu.profinit.manta.weathersystem.model.request.WeatherRequest;
+import eu.profinit.manta.weathersystem.model.response.WeatherResponse;
 
+/**
+ * New external systems or databases should implement this interface.
+ */
 public interface WeatherService {
 
-    CommonWeatherResponse getHistory(CommonWeatherRequest weatherRequest);
+    WeatherResponse getHistory(WeatherRequest weatherRequest);
 
-    CommonWeatherResponse getForecast(CommonWeatherRequest weatherRequest);
+    WeatherResponse getForecast(WeatherRequest weatherRequest);
 
 }
