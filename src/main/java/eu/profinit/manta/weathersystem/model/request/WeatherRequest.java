@@ -2,6 +2,7 @@ package eu.profinit.manta.weathersystem.model.request;
 
 import java.time.LocalDateTime;
 
+// TODO: In future, I could use separate models for controller and service layers
 public class WeatherRequest {
 
     private final String city;
